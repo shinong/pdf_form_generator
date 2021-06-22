@@ -78,8 +78,9 @@ def pdfWeightGen(weightList):
     output.write(outputStream)
     outputStream.close()
     
-
-def listPGen(E1,Spk,S_list):
+# listGen(E1, Spk, S_list) produce a new list that based on the EBKG index (E1, Int) and Spike index (Spk, Int) on the last run and the 
+#   the new sample list (S_list, (listof Str))  
+def listGen(E1,Spk,S_list):
     if len(S_list) != 20:
         print('error, number does not match!')
         return 0
@@ -138,80 +139,6 @@ def listPGen(E1,Spk,S_list):
         
     return new_list
 
-def listJGen(E1,Spk,S_list):      #number 6 and 13 are fixed 
-    if len(S_list) != 19:
-        print('error, number does not match!')
-        return 0
-    
-    if E1 >6 and E1 < 13:               #the input number is the posion in 25 samples, need to be renormalized
-        E1 = E1 -1 
-    elif E1 > 13:
-        E1 = E1 -2
-    if Spk >6 and Spk < 13:              
-        Spk = Spk -1 
-    elif Spk > 13:
-        Spk = Spk -2
-    
-    new_E1 = (E1 + 3)%23
-    new_Spk = (Spk + 1)%23
-    print(new_E1,new_Spk)
-
-    if new_Spk == new_E1:               #overlap with E1
-        new_E1 = (new_E1 + 1)%23
-        new_E2 = (new_E1 + 1)%23
-        new_E3 = (new_E1 + 2)%23
-    elif new_Spk == new_E1 +1:          #overlap with E2
-        new_E2 = (new_E1 + 2)%23
-        new_E3 = (new_E1 + 3)%23
-    elif new_Spk == new_E1 +2:          #overlap with E3
-        new_E2 = (new_E1 + 1)%23
-        new_E3 = (new_E1 + 3)%23
-    elif new_Spk == new_E1 +3:          #overlap with DI
-        new_E2 = (new_E1 + 1)%23
-        new_E3 = (new_E1 + 2)%23
-    else:                               #no overlap
-        new_E2 = (new_E1 + 1)%23
-        new_E3 = (new_E1 + 2)%23
-    
-
-    if new_E1 == 0:
-        new_E1 = 23
-    elif new_E2 == 0:
-        new_E2 = 23
-    elif new_E3 == 0:
-        new_E3 = 23
-    elif new_Spk == 0:
-        new_Spk = 23
-    else:
-        pass
-
-    new_list = []
-    counter = 0
-    for i in range(23):
-        if i+1 == new_E1 or i+1 == new_E2 or i+1 == new_E3:       
-            new_list.append('EBKG')
-            counter = counter+1
-        elif i+1 == new_Spk:
-            new_list.append('SPIKE')
-            counter = counter+1
-        else:
-            new_list.append(S_list[i-counter])
-            pass
-    new_list.insert(5,'EDI-Prime')              #insert the 2 cell in the list
-    new_list.insert(12,'EDI-Prime')
-
-    return new_list
-
-
-
-def readDb(table):
-    connection = sqlite3.connect('sampleform.db')
-    cursor = connection.cursor()
-    
-
-def testDbGen():
-    pass
-
 def csvReader(path):
     new_list = []
     f = open(path,'r', newline = '')
@@ -221,9 +148,11 @@ def csvReader(path):
     f.close()
     return new_list
 
-def csvWriter(path,sample_list,runNum,dpm):
+# csvWriter(run,path,sample_list,runNum,dpm) produce a new csv file based on the run type (run, "P" or "J"), template csv file path (path, str)
+#   sample list (sample_list, list), run number (runNum, int) and dpm value (dmp, float)
+def csvWriter(run,path,sample_list,runNum,dpm):
     fileDir = os.path.dirname(os.path.realpath('__file__'))
-    tempfilename = os.path.join(fileDir, '../E3H/template.xlsx')
+    tempfilename = os.path.join(fileDir, '../E3H/{}template.xlsx'.format(run))
     tempfilename = os.path.abspath(os.path.realpath(tempfilename))
     savefilename = os.path.join(fileDir, path)
     savefilename = os.path.abspath(os.path.realpath(savefilename))
@@ -269,15 +198,15 @@ if __name__ == "__main__":
     #sampleP_list = csvReader('list_input.csv')
     #print(listPGen(E,SPK,sampleP_list))
     #print(listJGen(E,SPK,sampleP_list))
-    csvWriter('../E3H/PRun/Run {}.xlsx',listPGen(E,SPK,sampleP_list),'p123',123.45)
+    #csvWriter('../E3H/PRun/Run {}.xlsx',listPGen(E,SPK,sampleP_list),'p123',123.45)
     #csvWriter('list_output.csv',listJGen(E,SPK,sampleP_list))
     #pdfGen('P660',listPGen(E,SPK,sampleP_list))
     #pdfGen('1428',listJGen(E,SPK,sampleP_list),timeCal(2019,8,22))
     #print(timeCal('9/10/2019'))
-    print(dpmCal(2019,8))
-    print(dpmCal(2019,9))
-    print(dpmCal(2019,10))
-    print(dpmCal(2019,11))
-    print(dpmCal(2019,12))
-    print(dpmCal(2020,8))
-    pdfWeightGen(8)
+    #print(dpmCal(2019,8))
+    #print(dpmCal(2019,9))
+    #print(dpmCal(2019,10))
+    #print(dpmCal(2019,11))
+    #print(dpmCal(2019,12))
+    #print(dpmCal(2020,8))
+    #pdfWeightGen(8)
