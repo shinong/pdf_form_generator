@@ -54,11 +54,11 @@ class mainWindow(QtWidgets.QMainWindow,gui.Ui_MainWindow):
             runNum = str(self.lineEdit_3.text())
             E = int(self.lineEdit.text())
             SPK = int(self.lineEdit_2.text())
-            sampleP_list = self.table2Csv(19)
+            sampleP_list = self.table2Csv(20)
             path = '../E3H/JRun/Run {}.xlsx'.format(runNum)
             path_w = '../weightRecord/data/{}.csv'.format(runNum)     #path for weight recording csv
             #path = 'listGen{}.csv'.format(runNum)
-            print(pd.listJGen(E,SPK,sampleP_list))
+            print(pd.listGen(E,SPK,sampleP_list))
             dpm = pd.dpmCal(self.calendarWidget.selectedDate().year(),self.calendarWidget.selectedDate().month())
             pd.csvWriter("J",path,pd.listGen(E,SPK,sampleP_list),runNum,dpm)
             pd.weightCsvWriter(path_w,pd.listGen(E,SPK,sampleP_list))
